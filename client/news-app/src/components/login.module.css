@@ -1,0 +1,157 @@
+.form{
+    
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #F8F8F8;
+height: 100%;
+}
+
+.title{
+    font-weight: 400;
+}
+
+.content{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+
+}
+
+.emaillabel{
+    margin-top: 20px;
+    margin-bottom: 10px;
+
+}
+.email{
+    /* margin-bottom: 20px; */
+    width: 300px;
+    height: 25px;
+    padding: 5px;
+    border:solid 2px #E8E8E8;
+    color:grey;
+    background-color:#F0F0F0;
+    outline:none;
+    border-radius: 5px;
+}
+
+.email:focus{
+    outline: none;
+    border:solid 2px #D8D8D8;
+}
+
+.passwordlabel{
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.password{
+    /* margin-bottom: 20px; */
+    width: 300px;
+    height: 25px;
+    padding: 5px;
+    border:solid 2px #E8E8E8;
+    color:grey;
+    background-color:#F0F0F0;
+    border-radius: 5px;
+}
+
+.password:focus{
+    outline: none;
+    border:solid 2px #D8D8D8;
+}
+
+.submitButton{
+    width: 310px;
+    height: 35px;
+    margin-top: 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submitButton2{
+    width: 310px;
+    height: 35px;
+    margin-top: 30px;
+    background-color: grey;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submitButton:hover{
+    background-color: #45a049;
+}
+
+.image{
+    width:50vw;
+    height: 100vh;
+    background-image: url('https://images.unsplash.com/photo-1554731617-8eafa9975365?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=465&q=80');
+    object-fit: cover;
+    background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+
+}
+
+.page{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.backgroundImage{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.error{
+    color: red;
+    font-size: 12px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+@media (max-width: 768px) and (min-width: 650px) {
+    .form{
+        width: 60vw;
+    }
+    .image{
+        width: 40vw;
+    }
+    /* .page{
+        flex-direction: column;
+    } */
+
+}
+
+@media (max-width: 650px) {
+    .form{
+        width: 100vw;
+    }
+    .image{
+      display: none;
+    }
+    .page{
+        flex-direction: column;
+    }
+}
+    
