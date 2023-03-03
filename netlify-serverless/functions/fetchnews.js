@@ -5,8 +5,9 @@ const app = express();
 const axios = require('axios');
 // const bodyParser = require('body-parser');
 import fetch from 'node-fetch';
+const cors = require('cors');
 const router = express.Router();
-
+app.use(cors());
 // app.use(bodyParser);
 
 router.get('/', async (req, res) => {

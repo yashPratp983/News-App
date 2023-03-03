@@ -51,6 +51,8 @@ const Login=()=>{
                 }
             })
             setUser(user1.data.user)
+            const news=await axios.get('http://localhost:8888/.netlify/functions/fetchnews');
+            console.log(news)
             navigate('/');
             setLoading(false)
             console.log(user1)
