@@ -9,6 +9,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const cors = require('cors');
+const ejs = require('ejs');
+const fs = require('fs');
 
 app.use(cors());
 
@@ -287,6 +289,24 @@ router.put('/unsubscribetopic', async (req, res) => {
         res.status(500).json({ error: err });
     }
 })
+
+router.get('/getemail', async (req, res) => {
+    const connect = await conn;
+    const title = 'My EJS App';
+    const news = await axios.get('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
+    let newsData = news.data.map(async (id) => {
+        const newsItem = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`)
+        return newsItem.data
+    })
+    newsData = await Promise.all(newsData)
+
+    const data = newsData
+    const html = await ejs.renderFile('newstemplate.ejs', { data: data }, { async: true });
+
+    res.status(200).send(html)
+})
+
+
 
 app.use('/.netlify/functions/user', router);
 
