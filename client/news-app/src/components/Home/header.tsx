@@ -234,7 +234,8 @@ const Header = () => {
                 <input placeholder="Search author" className={classes.input}></input>
             </div>
             <div className={classes.rightcon}>
-            {!user && <p className={classes.login}>Login</p>}
+            {!user && <p className={classes.login} onClick={()=>{navigate('/login')}}>Login</p>}
+            {user && <p className={classes.login} onClick={()=>{localStorage.removeItem('token');setUser(null)}}>Logout</p>}
             <p className={classes.filter} onClick={handleClick}>filter</p>
             <p className={classes.subscribe} onClick={handleClickOpen}>Subscribe</p>
             
@@ -293,8 +294,9 @@ const Header = () => {
                 sx: leftBar, elevation: 24
             }}>
             <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}}>
-            {!user && <DrawerItems>Login</DrawerItems>}
-            {!user && <DrawerItems>Sign up</DrawerItems>}
+            {!user && <DrawerItems onClick={()=>{navigate('/login')}}>Login</DrawerItems>}
+            {!user && <DrawerItems onClick={()=>{navigate('/signup')}}>Sign up</DrawerItems>}
+            {user && <DrawerItems onClick={()=>{localStorage.removeItem('token');setUser(null)}}>Logout</DrawerItems>}
             <DrawerItems>Subscribe</DrawerItems>
             <DrawerItems>
                 <Box sx={{display:'flex',justifyContent:'space-between'}} onClick={()=>{setShow(!show)}}>
