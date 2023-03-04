@@ -11,6 +11,10 @@ import { useNewsContext } from '../../contexts/news';
 import classes from './cardcontainer.module.css'
 import { useNavigate } from 'react-router-dom';
 import { usefilterContext } from '../../contexts/filter';
+import { useUserContext } from '../../contexts/user';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type cardProps={
     title:string
@@ -50,7 +54,7 @@ const Parent=styled(Box)`
  `
 
  const SubscribeButton=styled(Button)`
-    width:110px;
+    width:120px;
     height:30px;
     background-color:#4CAF50;
     color:white;
@@ -74,15 +78,85 @@ const Parent=styled(Box)`
 
 const Cardcom=()=>{
     const {news}=useNewsContext();
+    const {user,setUser}=useUserContext();
+    console.log(user)
+    const [loading,setloading]=useState<number>(0);
     const navigate=useNavigate();
     const {filter,setfilter}=usefilterContext();
     let news1=news?.sort((a,b)=>b.score-a.score);
+
+    const subscribeAuthor=async(author:string,id:number)=>{
+        const token=localStorage.getItem('token');
+        if(!user){
+            navigate('/login')
+        }
+        else{
+            setloading(id)
+            try{
+            const data=await axios.put('http://localhost:8888/.netlify/functions/user/subscribeauthor',{author},{
+                headers:{
+                    authorisation:`Bearer ${token}`
+                }
+            })
+            setUser(data.data.user)
+            setloading(0)
+        }
+        catch(err:any){
+            console.log(err)
+            setloading(0)
+            toast.error(`${err.response.data.error}`, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+        }
+    }
+
+    const unsubscribeAuthor=async(author:string,id:number)=>{
+        const token=localStorage.getItem('token');
+        if(!user){
+            navigate('/login')
+        }
+        else{
+            setloading(id)
+            try{
+            const {data}=await axios.put('http://localhost:8888/.netlify/functions/user/unsubscribeauthor',{author},{
+                headers:{
+                    authorisation:`Bearer ${token}`
+                }
+            })
+            console.log(data)
+            setUser(data.data.user)
+            setloading(0)
+        }catch(err:any){
+            console.log(err)
+            setloading(0)
+            toast.error(`${err.response.data.error}`, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+        }
+    }
 
     if(filter){
         news1=news1?.filter((item)=>item.type==filter)
     }
     console.log(news1)
     return(
+        <>
         <div className={classes.cardsContainer} >
             {news1?.map((item)=>{
             return(
@@ -113,9 +187,9 @@ const Cardcom=()=>{
                 <p style={{fontFamily:'cursive',color:'grey',paddingBottom:'0',margin:'0'}}>Author:</p>
                 <p style={{padding:'0',margin:'0',fontSize:'16px'}}>{item.by}</p>
             </Author >
-            <SubscribeButton>
-                Subscribe
-            </SubscribeButton>                
+        {(!user || !user?.subscribed_author.includes(item.by)) && loading!=item.id && <SubscribeButton onClick={()=>{subscribeAuthor(item.by,item.id)}}>Subscribe</SubscribeButton>}
+        {user && user?.subscribed_author.includes(item.by) && loading!=item.id && <SubscribeButton  onClick={()=>{unsubscribeAuthor(item.by,item.id)}}>Unsubscribe</SubscribeButton>}               
+          {loading==item.id && <SubscribeButton disabled style={{color:'white'}} >loading...</SubscribeButton>}
           </AuthorSection>
           <Title variant="h6" >
           {item.title}
@@ -128,6 +202,19 @@ const Cardcom=()=>{
       </Card>
     </Parent>)})}
     </div>
+    <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+    </>
     )
 }
 

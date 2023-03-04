@@ -138,6 +138,155 @@ router.get('/getuser', async (req, res) => {
     }
 })
 
+router.put('/subscribeauthor', async (req, res) => {
+    let token;
+    const connect = await conn;
+    try {
+
+        if (req.headers.authorisation && req.headers.authorisation.startsWith('Bearer')) {
+            token = req.headers.authorisation.split(' ')[1];
+        }
+
+        if (!token) {
+            return res.status(401).json({ status: false, error: "Not authorized to access this route" })
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            return res.status(400).json({ status: false, error: "No user found with this id" })
+        }
+
+        const author = req.body.author;
+
+        if (user.subscribed_author.includes(author)) {
+            return res.status(400).json({ status: false, error: "Already subscribed to this author" })
+        }
+
+        user.subscribed_author.push(author);
+
+        await user.save();
+
+        res.status(200).send({ success: true, user: user });
+
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+})
+
+
+router.put('/subscribetopic', async (req, res) => {
+    let token;
+    try {
+        const connect = await conn;
+        if (req.headers.authorisation && req.headers.authorisation.startsWith('Bearer')) {
+            token = req.headers.authorisation.split(' ')[1];
+        }
+
+        if (!token) {
+            return res.status(401).json({ status: false, error: "Not authorized to access this route" })
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            return res.status(400).json({ status: false, error: "No user found with this id" })
+        }
+
+        const topic = req.body.topic;
+
+        if (user.subscribed_topic.includes(topic)) {
+            return res.status(400).json({ status: false, error: "Already subscribed to this topic" })
+        }
+
+        user.subscribed_topic.push(topic);
+
+        await user.save();
+
+        res.status(200).send({ success: true, user: user });
+
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+})
+
+router.put('/unsubscribeauthor', async (req, res) => {
+    let token;
+    try {
+        const connect = await conn;
+
+        if (req.headers.authorisation && req.headers.authorisation.startsWith('Bearer')) {
+            token = req.headers.authorisation.split(' ')[1];
+        }
+
+        if (!token) {
+            return res.status(401).json({ status: false, error: "Not authorized to access this route" })
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            return res.status(400).json({ status: false, error: "No user found with this id" })
+        }
+
+        const author = req.body.author;
+
+        if (!user.subscribed_author.includes(author)) {
+            return res.status(400).json({ status: false, error: "Not subscribed to this author" })
+        }
+
+        user.subscribed_author = user.subscribed_author.filter((item) => item !== author);
+
+        await user.save();
+
+        res.status(200).send({ success: true, user: user });
+
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+})
+
+router.put('/unsubscribetopic', async (req, res) => {
+    let token;
+    try {
+        const connect = await conn;
+        if (req.headers.authorisation && req.headers.authorisation.startsWith('Bearer')) {
+            token = req.headers.authorisation.split(' ')[1];
+        }
+
+        if (!token) {
+            return res.status(401).json({ status: false, error: "Not authorized to access this route" })
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            return res.status(400).json({ status: false, error: "No user found with this id" })
+        }
+
+        const topic = req.body.topic;
+
+        if (!user.subscribed_topic.includes(topic)) {
+            return res.status(400).json({ status: false, error: "Not subscribed to this topic" })
+        }
+
+        user.subscribed_topic = user.subscribed_topic.filter((item) => item !== topic);
+
+        await user.save();
+
+        res.status(200).send({ success: true, user: user });
+
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+})
 
 app.use('/.netlify/functions/user', router);
 

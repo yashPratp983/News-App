@@ -12,8 +12,14 @@ import Drawer from '@mui/material/Drawer';
 import { useUserContext } from '../../contexts/user';
 import { useNewsContext } from '../../contexts/news';
 import { usefilterContext } from '../../contexts/filter';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Header = () => {
     const {filter,setfilter}=usefilterContext()
+    const navigate=useNavigate()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const {news,setNews}=useNewsContext()
     const [open1, setOpen1] = useState(false);
@@ -21,6 +27,7 @@ const Header = () => {
     const [opendrawer, setOpendrawer] = useState(false);
     const [show, setShow] = useState(false);
     const { user, setUser } = useUserContext()
+    const [loading,setloading]=useState('')
 
     const filterItems = news?.map((item) => item.type).filter((value, index, self) => self.indexOf(value) === index);
 
@@ -38,6 +45,91 @@ const Header = () => {
     const handleClose = () => {
       setAnchorEl(null);
     };
+
+    const subscribeTopic=async(topic:string,item:string)=>{
+        const token=localStorage.getItem('token')
+
+        if(!user){
+            navigate('/login')
+            return
+        }
+        try{
+            setloading(item)
+            const data=await axios.put('http://localhost:8888/.netlify/functions/user/subscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
+            setUser(data.data.user)
+            setloading('')
+        }
+        catch(err:any){
+           setloading('')
+           toast.error(`${err.response.data.error}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+        }
+
+    }
+
+    const unsubscribeTopic=async(topic:string,item:string)=>{
+        const token=localStorage.getItem('token')
+
+        if(!user){
+            navigate('/login')
+            return
+        }
+        try{
+            setloading(item)
+            const data=await axios.put('http://localhost:8888/.netlify/functions/user/unsubscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
+            setUser(data.data.user)
+            setloading('')
+        }
+        catch(err:any){
+            setloading('')
+            toast.error(`${err.response.data.error}`, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
+
+    const unsubscribeAuthor=async(author:string,item:string)=>{
+        const token=localStorage.getItem('token')
+
+        if(!user){
+            navigate('/login')
+            return
+        }
+        try{
+            setloading(item);
+            const data=await axios.put('http://localhost:8888/.netlify/functions/user/unsubscribeauthor',{author},{headers:{authorisation:`Bearer ${token}`}})
+            setUser(data.data.user)
+            setloading('')
+        }
+        catch(err:any){
+           setloading('')
+           toast.error(`${err.response.data.error}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+        }
+    }
 
     const dialogStyle={
         width:'400px',
@@ -134,6 +226,7 @@ const Header = () => {
     }
 
     return(
+        <>
         <div className={classes.header}>
             <h1 className={classes.title}>News</h1>
             <div className={classes.search}>
@@ -170,72 +263,30 @@ const Header = () => {
         
         <Box>
             <Titles>Subscribe Topics</Titles>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Subscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Subscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Subscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Subscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Subscribe</ButtonElement>
-            </TopicItem>
-        </Box>
-        <Box>
-        <Titles>Subscribed Topics</Titles>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
+            {filterItems?.map((item,index)=>{
+                return(
+                    <TopicItem key={index}>
+                        <Typography>{item}</Typography>
+                        {user?.subscribed_topic.includes(item) && loading!=item && <ButtonElement onClick={()=>{unsubscribeTopic(item,item)}}>Unsubscribe</ButtonElement>}
+                        {!user?.subscribed_topic.includes(item) && loading!=item && <ButtonElement onClick={()=>{subscribeTopic(item,item)}}>Subscribe</ButtonElement>}
+                        
+                        {loading==item && <ButtonElement disabled style={{color:'white'}}>loading...</ButtonElement>}
+                    </TopicItem>
+                )
+            })}
+           
         </Box>
         <Box>
         <Titles>Subscribed Authors</Titles>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
-            <TopicItem>
-                <Typography>Technology</Typography>
-                <ButtonElement>Unsubscribe</ButtonElement>
-            </TopicItem>
+           {user?.subscribed_author.map((item,index)=>{
+                return(
+                 <TopicItem key={index}>
+                 <Typography>{item}</Typography>
+                 {loading!=item && <ButtonElement onClick={()=>{unsubscribeAuthor(item,item)}}>Unsubscribe</ButtonElement>}
+                 {loading==item && <ButtonElement disabled style={{color:'white'}}>loading...</ButtonElement>}
+                </TopicItem>
+                )
+           })}
         </Box>
         </Dialog>
         <Drawer anchor='right' open={opendrawer} onClose={() => { setOpendrawer(false) }} PaperProps={{
@@ -263,6 +314,19 @@ const Header = () => {
             </Box>
         </Drawer>
         </div>
+        <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+        </>
     )
 }
 
