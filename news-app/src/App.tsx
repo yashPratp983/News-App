@@ -51,6 +51,33 @@ function App() {
       }
     }
 
+    const getNews=async()=>{
+      try{
+        const news=await axios.get('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/fetchnews');
+        console.log(news)
+        let newsvalid=news.data.news.map((item:any)=>{
+          return {
+            id:item.id,
+            by:item.by,
+            title:item.title,
+            url:item.url,
+            time:item.time,
+            score:item.score,
+            type:item.type,
+          }
+        })
+        setNews(newsvalid)
+        setLoading(false)
+      }catch(err){
+        setLoading(false)
+        console.log(err)
+      }
+    }
+    
+    if (!token) {
+      getNews()
+    }
+
     if (token) {
       getUser(token)
     }
