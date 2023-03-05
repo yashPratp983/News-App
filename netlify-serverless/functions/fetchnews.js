@@ -3,8 +3,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const axios = require('axios');
-// const bodyParser = require('body-parser');
-import fetch from 'node-fetch';
+
 const cors = require('cors');
 const router = express.Router();
 app.use(cors());

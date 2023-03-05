@@ -22,6 +22,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.0",
+    "netlify-lambda": "^2.0.16",
     "node-cron": "^3.0.2",
     "node-fetch": "^3.3.0",
     "node-schedule": "^2.1.1",

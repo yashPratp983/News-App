@@ -61,7 +61,7 @@ const Header = ({getSearchNews}:Props) => {
         }
         try{
             setloading(item)
-            const data=await axios.put('http://localhost:8888/.netlify/functions/user/subscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
+            const data=await axios.put('https://6404d5c738068b3beb6907cd--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/subscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
             setUser(data.data.user)
             setloading('')
         }
@@ -90,7 +90,7 @@ const Header = ({getSearchNews}:Props) => {
         }
         try{
             setloading(item)
-            const data=await axios.put('http://localhost:8888/.netlify/functions/user/unsubscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
+            const data=await axios.put('https://6404d5c738068b3beb6907cd--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
             setUser(data.data.user)
             setloading('')
         }
@@ -118,7 +118,7 @@ const Header = ({getSearchNews}:Props) => {
         }
         try{
             setloading(item);
-            const data=await axios.put('http://localhost:8888/.netlify/functions/user/unsubscribeauthor',{author},{headers:{authorisation:`Bearer ${token}`}})
+            const data=await axios.put('https://6404d5c738068b3beb6907cd--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribeauthor',{author},{headers:{authorisation:`Bearer ${token}`}})
             setUser(data.data.user)
             setloading('')
         }
@@ -174,7 +174,7 @@ const Header = ({getSearchNews}:Props) => {
     background-color:#4CAF50;
     color:white;
     
-    &:hover: {
+    &:hover {
         background-color: #45a049;
     
 }
@@ -241,7 +241,7 @@ const Header = ({getSearchNews}:Props) => {
             <h1 className={classes.title}>News</h1>
             <div className={classes.search}>
                 <FontAwesomeIcon icon={faSearch} className={classes.searchicon}/>
-                <input placeholder="Search author" className={classes.input} onChange={handleSearch}></input>
+                <input placeholder="Search news" className={classes.input} onChange={handleSearch}></input>
             </div>
             <div className={classes.rightcon}>
             {!user && <p className={classes.login} onClick={()=>{navigate('/login')}}>Login</p>}

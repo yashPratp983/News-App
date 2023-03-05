@@ -53,8 +53,8 @@ const Parent=styled(Box)`
     height:30px;
     background-color:#4CAF50;
     color:white;
-    "&:hover": {
-        background: #45a049,
+    &:hover {
+        background-color: #45a049;
     }
  `
 
@@ -95,7 +95,7 @@ const Cardcom=({searchNews}:Props)=>{
         else{
             setloading(id)
             try{
-            const data=await axios.put('http://localhost:8888/.netlify/functions/user/subscribeauthor',{author},{
+            const data=await axios.put('https://6404d5c738068b3beb6907cd--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/subscribeauthor',{author},{
                 headers:{
                     authorisation:`Bearer ${token}`
                 }
@@ -128,7 +128,7 @@ const Cardcom=({searchNews}:Props)=>{
         else{
             setloading(id)
             try{
-            const {data}=await axios.put('http://localhost:8888/.netlify/functions/user/unsubscribeauthor',{author},{
+            const data=await axios.put('https://6404d5c738068b3beb6907cd--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribeauthor',{author},{
                 headers:{
                     authorisation:`Bearer ${token}`
                 }
