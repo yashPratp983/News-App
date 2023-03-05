@@ -11,6 +11,9 @@ const jwt = require('jsonwebtoken')
 const cors = require('cors');
 const ejs = require('ejs');
 const fs = require('fs');
+const schedule = require('node-schedule');
+const cron = require('node-cron');
+const nodemailer = require('nodemailer');
 
 app.use(cors());
 
@@ -290,9 +293,9 @@ router.put('/unsubscribetopic', async (req, res) => {
     }
 })
 
-router.get('/getemail', async (req, res) => {
+cron.schedule('0 0 */24 * * *', async () => {
     const connect = await conn;
-    const title = 'My EJS App';
+    const user = await User.find();
     const news = await axios.get('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
     let newsData = news.data.map(async (id) => {
         const newsItem = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`)
@@ -300,11 +303,50 @@ router.get('/getemail', async (req, res) => {
     })
     newsData = await Promise.all(newsData)
 
-    const data = newsData
-    const html = await ejs.renderFile('newstemplate.ejs', { data: data }, { async: true });
+    newsData = newsData.filter((item) => {
+        const now = Date.now(); // get the current timestamp in milliseconds
+        const newsTimestamp = item.time * 1000; // convert the news item's timestamp to milliseconds
+        const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // calculate the number of milliseconds in a day
+        const difference = now - newsTimestamp; // calculate the difference between the current timestamp and the news item's timestamp
+        if (difference < oneDayInMilliseconds) {
+            return item
+        }
+    })
 
-    res.status(200).send(html)
-})
+    user.forEach(async (item) => {
+        const subscribed_author = item.subscribed_author;
+        const subscribed_topic = item.subscribed_topic;
+        const email = item.email;
+        const filtered = newsData.filter((item) => subscribed_author.includes(item.by) || subscribed_topic.includes(item.type))
+        const html = await ejs.renderFile('newstemplate.ejs', { data: filtered }, { async: true });
+        if (filtered.length > 0) {
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.SMTP_EMAIL,
+                    pass: process.env.SMTP_PASSWORD
+                }
+            })
+            const mailOptions = {
+                from: process.env.SMTP_EMAIL,
+                to: email,
+                subject: 'News',
+                html: html
+            };
+
+            try {
+                await transporter.sendMail(mailOptions);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+    })
+
+
+});
+
+
 
 
 

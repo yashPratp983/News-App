@@ -16,13 +16,8 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-type cardProps={
-    title:string
-    by:string
-    url:string
-    time:number
-    score:number
-    type:string
+type Props = {
+    searchNews: string
 }
 
 const Parent=styled(Box)`
@@ -76,15 +71,22 @@ const Parent=styled(Box)`
  `
 
 
-const Cardcom=()=>{
+const Cardcom=({searchNews}:Props)=>{
     const {news}=useNewsContext();
     const {user,setUser}=useUserContext();
     console.log(user)
     const [loading,setloading]=useState<number>(0);
     const navigate=useNavigate();
     const {filter,setfilter}=usefilterContext();
-    let news1=news?.sort((a,b)=>b.score-a.score);
-
+    let news1:{
+        by: string;
+        id: number;
+        score: number;
+        time: number;
+        title: string;
+        type: string;
+        url: string;
+    }[] | null |undefined=news
     const subscribeAuthor=async(author:string,id:number)=>{
         const token=localStorage.getItem('token');
         if(!user){
@@ -152,9 +154,14 @@ const Cardcom=()=>{
     }
 
     if(filter){
-        news1=news1?.filter((item)=>item.type==filter)
+        news1=news?.filter((item)=>item.type==filter)
     }
     console.log(news1)
+
+    if(searchNews && searchNews.length>0 && news1) {
+        news1=news1.filter((item)=>item.by.toLowerCase().includes(searchNews.toLowerCase()) || item.title.toLowerCase().includes(searchNews.toLowerCase()));
+    }
+
     return(
         <>
         <div className={classes.cardsContainer} >

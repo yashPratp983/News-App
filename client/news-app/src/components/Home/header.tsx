@@ -17,7 +17,11 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Header = () => {
+type Props={
+    getSearchNews:(filteredNews:string)=>void
+}
+
+const Header = ({getSearchNews}:Props) => {
     const {filter,setfilter}=usefilterContext()
     const navigate=useNavigate()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -28,6 +32,8 @@ const Header = () => {
     const [show, setShow] = useState(false);
     const { user, setUser } = useUserContext()
     const [loading,setloading]=useState('')
+    const [search, setSearch] = useState('');
+    const [searchNews, setSearchNews] = useState<{}[] | undefined>([]);
 
     const filterItems = news?.map((item) => item.type).filter((value, index, self) => self.indexOf(value) === index);
 
@@ -225,13 +231,17 @@ const Header = () => {
        console.log(item)
     }
 
+    const handleSearch=(e:React.ChangeEvent<HTMLInputElement>)=>{
+        getSearchNews(e.target.value)
+    }
+
     return(
         <>
         <div className={classes.header}>
             <h1 className={classes.title}>News</h1>
             <div className={classes.search}>
                 <FontAwesomeIcon icon={faSearch} className={classes.searchicon}/>
-                <input placeholder="Search author" className={classes.input}></input>
+                <input placeholder="Search author" className={classes.input} onChange={handleSearch}></input>
             </div>
             <div className={classes.rightcon}>
             {!user && <p className={classes.login} onClick={()=>{navigate('/login')}}>Login</p>}
