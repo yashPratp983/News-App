@@ -31,9 +31,7 @@ function App() {
       
         console.log(user1)
         setUser(user1.data.user)
-        setLoading(false)
       } catch (err) {
-        setLoading(false)
         console.log(err)
       }
     }
