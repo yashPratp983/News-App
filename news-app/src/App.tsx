@@ -22,20 +22,7 @@ function App() {
     const token = localStorage.getItem('token')
     const getUser = async (token: string) => {
       try {
-        const news=await axios.get('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/fetchnews');
-        console.log(news)
-        let newsvalid=news.data.news.map((item:any)=>{
-          return {
-            id:item.id,
-            by:item.by,
-            title:item.title,
-            url:item.url,
-            time:item.time,
-            score:item.score,
-            type:item.type,
-          }
-        })
-        setNews(newsvalid)
+       
         let user1 = await axios.get('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/getuser', {
           headers: {
             authorisation: `Bearer ${token}`
@@ -74,9 +61,9 @@ function App() {
       }
     }
     
-    if (!token) {
+    
       getNews()
-    }
+    
 
     if (token) {
       getUser(token)
