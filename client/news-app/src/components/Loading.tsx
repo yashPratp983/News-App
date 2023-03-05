@@ -5,14 +5,14 @@ type LoadingProps={
     children:React.ReactNode
 }
 
-function Loading({loading,children}:LoadingProps): (JSX.Element| React.ReactNode){
-    if (loading) {
+function Loading(){
+
         return (
             <div className="spin">
             </div>
         )
-    }
-    return children
+  
+
 }
 
 export default Loading

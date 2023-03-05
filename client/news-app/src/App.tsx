@@ -64,7 +64,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-       <Route path="/" element={ <Loading loading={loading}><Home /></Loading>} />
+       <Route path="/" element={ loading?<Loading />:<Home />} />
       </Routes>
     </div>
     
