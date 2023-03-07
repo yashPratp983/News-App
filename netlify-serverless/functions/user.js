@@ -293,55 +293,63 @@ router.put('/unsubscribetopic', async (req, res) => {
     }
 })
 
-cron.schedule('0 0 */24 * * *', async () => {
-    const connect = await conn;
-    const user = await User.find();
-    const news = await axios.get('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
-    let newsData = news.data.map(async (id) => {
-        const newsItem = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`)
-        return newsItem.data
-    })
-    newsData = await Promise.all(newsData)
+//0 0 */24 * * * - every 24 hours
 
-    newsData = newsData.filter((item) => {
-        const now = Date.now(); // get the current timestamp in milliseconds
-        const newsTimestamp = item.time * 1000; // convert the news item's timestamp to milliseconds
-        const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // calculate the number of milliseconds in a day
-        const difference = now - newsTimestamp; // calculate the difference between the current timestamp and the news item's timestamp
-        if (difference < oneDayInMilliseconds) {
-            return item
-        }
-    })
+cron.schedule('* * * * *', async () => {
+    try {
+        const connect = await conn;
+        const user = await User.find();
+        const news = await axios.get('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
+        let newsData = news.data.map(async (id) => {
+            const newsItem = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`)
+            return newsItem.data
+        })
+        newsData = await Promise.all(newsData)
 
-    user.forEach(async (item) => {
-        const subscribed_author = item.subscribed_author;
-        const subscribed_topic = item.subscribed_topic;
-        const email = item.email;
-        const filtered = newsData.filter((item) => subscribed_author.includes(item.by) || subscribed_topic.includes(item.type))
-        const html = await ejs.renderFile('newstemplate.ejs', { data: filtered }, { async: true });
-        if (filtered.length > 0) {
-            const transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: process.env.SMTP_EMAIL,
-                    pass: process.env.SMTP_PASSWORD
-                }
-            })
-            const mailOptions = {
-                from: process.env.SMTP_EMAIL,
-                to: email,
-                subject: 'News',
-                html: html
-            };
-
-            try {
-                await transporter.sendMail(mailOptions);
-            } catch (error) {
-                console.log(error);
+        newsData = newsData.filter((item) => {
+            const now = Date.now(); // get the current timestamp in milliseconds
+            const newsTimestamp = item.time * 1000; // convert the news item's timestamp to milliseconds
+            const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // calculate the number of milliseconds in a day
+            const difference = now - newsTimestamp; // calculate the difference between the current timestamp and the news item's timestamp
+            if (difference < oneDayInMilliseconds) {
+                return item
             }
-        }
+        })
 
-    })
+        console.log(newsData);
+
+        user.forEach(async (item) => {
+            const subscribed_author = item.subscribed_author;
+            const subscribed_topic = item.subscribed_topic;
+            const email = item.email;
+            const filtered = newsData.filter((item) => subscribed_author.includes(item.by) || subscribed_topic.includes(item.type))
+            const html = await ejs.renderFile('newstemplate.ejs', { data: filtered }, { async: true });
+            if (filtered.length > 0) {
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.SMTP_EMAIL,
+                        pass: process.env.SMTP_PASSWORD
+                    }
+                })
+                const mailOptions = {
+                    from: process.env.SMTP_EMAIL,
+                    to: email,
+                    subject: 'News',
+                    html: html
+                };
+
+                try {
+                    await transporter.sendMail(mailOptions);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+        })
+    } catch (err) {
+        console.log(err)
+    }
 
 
 });
