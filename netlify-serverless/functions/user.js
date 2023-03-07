@@ -294,6 +294,7 @@ router.put('/unsubscribetopic', async (req, res) => {
 })
 
 cron.schedule('0 0 */24 * * *', async () => {
+    try{
     const connect = await conn;
     const user = await User.find();
     const news = await axios.get('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
@@ -342,6 +343,9 @@ cron.schedule('0 0 */24 * * *', async () => {
         }
 
     })
+    }catch(err){
+        console.log(err)
+    }
 
 
 });
