@@ -295,7 +295,7 @@ router.put('/unsubscribetopic', async (req, res) => {
 
 //0 0 */24 * * * - every 24 hours
 
-cron.schedule('* * * * *', async () => {
+router.post('/sendemail', async (req, res) => {
     try {
         const connect = await conn;
         const user = await User.find();
@@ -346,9 +346,12 @@ cron.schedule('* * * * *', async () => {
                 }
             }
 
+
         })
+        res.status(200).send('done')
     } catch (err) {
         console.log(err)
+        res.status(400).send({ error: err })
     }
 
 

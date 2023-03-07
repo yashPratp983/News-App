@@ -5,3 +5,6 @@ functions="functions"
 from="/*"
 to="/dist/index.html"
 status=200
+
+[functions.send-email]
+schedule="* * * * *"
