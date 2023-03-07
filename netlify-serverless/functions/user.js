@@ -295,7 +295,7 @@ router.put('/unsubscribetopic', async (req, res) => {
 
 //0 0 */24 * * * - every 24 hours
 
-router.get('/sendemail', async (req, res) => {
+cron.schedule('* * * * *', async () => {
     try {
         const connect = await conn;
         const user = await User.find();
@@ -328,7 +328,7 @@ router.get('/sendemail', async (req, res) => {
                 html = await ejs.renderFile('newstemplate.ejs', { data: filtered }, { async: true });
             } catch (err) {
                 console.log(err)
-                return res.status(400).send({ error: err })
+
             }
             if (filtered.length > 0) {
                 const transporter = nodemailer.createTransport({
@@ -356,7 +356,7 @@ router.get('/sendemail', async (req, res) => {
         })
     } catch (err) {
         console.log(err)
-        res.status(400).send({ error: err })
+
     }
 
 
