@@ -295,7 +295,7 @@ router.put('/unsubscribetopic', async (req, res) => {
 
 //0 0 */24 * * * - every 24 hours
 
-router.post('/sendemail', async (req, res) => {
+router.get('/sendemail', async (req, res) => {
     try {
         const connect = await conn;
         const user = await User.find();
@@ -323,7 +323,13 @@ router.post('/sendemail', async (req, res) => {
             const subscribed_topic = item.subscribed_topic;
             const email = item.email;
             const filtered = newsData.filter((item) => subscribed_author.includes(item.by) || subscribed_topic.includes(item.type))
-            const html = await ejs.renderFile('newstemplate.ejs', { data: filtered }, { async: true });
+            let html;
+            try {
+                html = await ejs.renderFile('newstemplate.ejs', { data: filtered }, { async: true });
+            } catch (err) {
+                console.log(err)
+                return res.status(400).send({ error: err })
+            }
             if (filtered.length > 0) {
                 const transporter = nodemailer.createTransport({
                     service: 'gmail',
@@ -348,7 +354,6 @@ router.post('/sendemail', async (req, res) => {
 
 
         })
-        res.status(200).send('done')
     } catch (err) {
         console.log(err)
         res.status(400).send({ error: err })
