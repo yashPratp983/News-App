@@ -11,9 +11,10 @@ const jwt = require('jsonwebtoken')
 const cors = require('cors');
 const ejs = require('ejs');
 const fs = require('fs');
-const schedule = require('node-schedule');
+
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
+import { schedule } from '@netlify/functions';
 
 app.use(cors());
 
@@ -295,7 +296,7 @@ router.put('/unsubscribetopic', async (req, res) => {
 
 //0 0 */24 * * * - every 24 hours
 
-cron.schedule('* * * * *', async () => {
+export const handler = schedule('* * * * *', async () => {
     try {
         const connect = await conn;
         const user = await User.find();
