@@ -315,6 +315,8 @@ cron.schedule('* * * * *', async () => {
             return item
         }
     })
+        
+        console.log(newsData)
 
     user.forEach(async (item) => {
         const subscribed_author = item.subscribed_author;
