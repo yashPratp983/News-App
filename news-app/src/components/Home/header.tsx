@@ -307,7 +307,7 @@ const Header = ({getSearchNews}:Props) => {
             {!user && <DrawerItems onClick={()=>{navigate('/login')}}>Login</DrawerItems>}
             {!user && <DrawerItems onClick={()=>{navigate('/signup')}}>Sign up</DrawerItems>}
             {user && <DrawerItems onClick={()=>{localStorage.removeItem('token');setUser(null)}}>Logout</DrawerItems>}
-            <DrawerItems>Subscribe</DrawerItems>
+            <DrawerItems onClick={handleClickOpen}>Subscribe</DrawerItems>
             <DrawerItems>
                 <Box sx={{display:'flex',justifyContent:'space-between'}} onClick={()=>{setShow(!show)}}>
                 <Typography style={{fontSize:'18px'}}>Filter</Typography>
