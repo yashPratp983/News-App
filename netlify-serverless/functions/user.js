@@ -295,7 +295,7 @@ router.put('/unsubscribetopic', async (req, res) => {
 
 //0 0 */24 * * * - every 24 hours
 
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 0 */24 * * *', async () => {
     try {
         const connect = await conn;
         const user = await User.find();
