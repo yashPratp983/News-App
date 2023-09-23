@@ -61,7 +61,7 @@ const Header = ({getSearchNews}:Props) => {
         }
         try{
             setloading(item)
-            const data=await axios.put('https://6404d5c738068b3beb6907cd--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/subscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
+            const data=await axios.put('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/subscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
             setUser(data.data.user)
             setloading('')
         }
@@ -90,7 +90,7 @@ const Header = ({getSearchNews}:Props) => {
         }
         try{
             setloading(item)
-            const data=await axios.put('https://6404d5c738068b3beb6907cd--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
+            const data=await axios.put('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribetopic',{topic},{headers:{authorisation:`Bearer ${token}`}})
             setUser(data.data.user)
             setloading('')
         }
@@ -118,7 +118,7 @@ const Header = ({getSearchNews}:Props) => {
         }
         try{
             setloading(item);
-            const data=await axios.put('https://6404d5c738068b3beb6907cd--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribeauthor',{author},{headers:{authorisation:`Bearer ${token}`}})
+            const data=await axios.put('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribeauthor',{author},{headers:{authorisation:`Bearer ${token}`}})
             setUser(data.data.user)
             setloading('')
         }
