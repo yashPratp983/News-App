@@ -95,7 +95,7 @@ const Cardcom=({searchNews}:Props)=>{
         else{
             setloading(id)
             try{
-            const data=await axios.put('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/subscribeauthor',{author},{
+            const data=await axios.put('https://6408b80201472000081e9bcc--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/subscribeauthor',{author},{
                 headers:{
                     authorisation:`Bearer ${token}`
                 }
@@ -128,7 +128,7 @@ const Cardcom=({searchNews}:Props)=>{
         else{
             setloading(id)
             try{
-            const data=await axios.put('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribeauthor',{author},{
+            const data=await axios.put('https://6408b80201472000081e9bcc--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/unsubscribeauthor',{author},{
                 headers:{
                     authorisation:`Bearer ${token}`
                 }

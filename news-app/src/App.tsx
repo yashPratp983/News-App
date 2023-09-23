@@ -23,7 +23,7 @@ function App() {
     const getUser = async (token: string) => {
       try {
        
-        let user1 = await axios.get('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/getuser', {
+        let user1 = await axios.get('https://6408b80201472000081e9bcc--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/getuser', {
           headers: {
             authorisation: `Bearer ${token}`
           }
@@ -38,7 +38,7 @@ function App() {
 
     const getNews=async()=>{
       try{
-        const news=await axios.get('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/fetchnews');
+        const news=await axios.get('https://6408b80201472000081e9bcc--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/fetchnews');
         console.log(news)
         let newsvalid=news.data.news.map((item:any)=>{
           return {

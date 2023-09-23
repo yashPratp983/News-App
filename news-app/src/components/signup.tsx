@@ -45,7 +45,7 @@ const Signup=()=>{
 
     const getUser=async(token:string)=>{
         try{
-            let user1=await axios.get('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/getuser',{
+            let user1=await axios.get('https://6408b80201472000081e9bcc--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/getuser',{
                 headers:{
                     authorisation:`Bearer ${token}`
                 }
@@ -75,7 +75,7 @@ const Signup=()=>{
         // console.log(data);
         try {
             setLoading(true)
-            let tok = await axios.post('https://beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/signup', data);
+            let tok = await axios.post('https://6408b80201472000081e9bcc--beautiful-rolypoly-1da010.netlify.app/.netlify/functions/user/signup', data);
             console.log(tok)
             localStorage.setItem('token', tok.data.token);
             getUser(tok.data.token)
